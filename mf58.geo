@@ -1,5 +1,5 @@
 
-mm = 1.0e-3;
+mm = 1e-3;
 R = 1*mm;
 R1 = 0.4 * mm;
 R2 = 0.35 * mm;
@@ -11,11 +11,11 @@ L2 = 2*mm;
 L3 = 2.25*mm;
 rr = 0.5*mm;
 
-lc = 0.1*mm;
+lc = 0.02*mm;
 
 Point(1) = {L1,0,0,lc};
-Point(2) = {L,0,0,3*lc};
-Point(3) = {L,R3,0,3*lc};
+Point(2) = {L,0,0,2*lc};
+Point(3) = {L,R3,0,2*lc};
 Point(4) = {L3,R3,0,lc};
 Point(5) = {L2,R2,0,lc};
 Point(6) = {L1,R2,0,lc};
@@ -50,7 +50,7 @@ Physical Curve("temp") = {6,7,8};
 Physical Curve("hglass") = {9,10,11,12};
 
 Physical Surface("steel") = {22};
-Physical Surface("glass") = {22};
+Physical Surface("glass") = {24};
 
 
 
