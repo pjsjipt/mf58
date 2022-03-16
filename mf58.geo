@@ -5,13 +5,13 @@ R1 = 0.4 * mm;
 R2 = 0.35 * mm;
 R3 = 0.25 * mm;
 
-L = 15.0*mm;
+L = 25*mm;
 L1 = 0.125*mm;
 L2 = 2*mm;
 L3 = 2.25*mm;
 rr = 0.5*mm;
 
-lc = 0.02*mm;
+lc = 0.01*mm;
 
 Point(1) = {L1,0,0,lc};
 Point(2) = {L,0,0,2*lc};
@@ -47,7 +47,8 @@ Plane Surface(24) = {23};
 
 Physical Curve("hsteel") = {3,4};
 Physical Curve("temp") = {6,7,8};
-Physical Curve("hglass") = {9,10,11,12};
+Physical Curve("tempend") = {2};
+Physical Curve("hglass") = {10,11,12};
 
 Physical Surface("steel") = {22};
 Physical Surface("glass") = {24};
