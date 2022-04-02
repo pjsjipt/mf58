@@ -70,7 +70,7 @@ function ModelInfo(u=10.0; k=Dict("glass"=>1.0, "steel"=>50.0), hsurf=["hglass",
                                 "hglass"=>"glass", "hsteel"=>"steel"),
                    q=Dict{String,Float64}(), Lmm = [2.0, 0.5],
                    qsurf=Dict{String,Float64}(),
-                   Prₐ=0.7, kₐ=25e-3, νₐ=1.6e-5, Tref=20.0)
+                   Prₐ=0.707, kₐ=25.3e-3, νₐ=1.6e-5, Tref=20.0)
     nh = length(hsurf)
     nu = length(u)
 
@@ -91,7 +91,7 @@ function ModelInfo(u=10.0; k=Dict("glass"=>1.0, "steel"=>50.0), hsurf=["hglass",
     
     L = Lmm .* 1e-3
     Re = (U ./ νₐ) .* L
-    Nu = (0.51*Prₐ^0.37) .* Re .^ 0.5
+    Nu = (0.51*Prₐ^0.37) .* Re .^ 0.35 * 1.35 # .^ 0.5
     h1 = kₐ .* Nu ./ L
 
     h = Dict{String,Float64}()
@@ -115,9 +115,9 @@ function fem_model(th::ModelInfo, model; order=2, dimension=2)
     
 
     tsurf = th.tsurf
-    Tw = [th.T[s]-th.Tref for s in tsurf]
+    uw = [th.T[s]-th.Tref for s in tsurf]
     V = TestFESpace(model, reffe, dirichlet_tags=tsurf)
-    U = TrialFESpace(V, Tw)
+    U = TrialFESpace(V, uw)
 
     Ω = Triangulation(model)
     dΩ = Measure(Ω, degree)
@@ -146,13 +146,16 @@ function fem_model(th::ModelInfo, model; order=2, dimension=2)
         return k * ∇u
     end
     f(x) = 0.0
+    nh = length(hsurf)
+    hh = zeros(nh)
+    for i in 1:nh
+        hh[i] = th.h[ hsurf[i] ]
+    end
     
     function a(u,v)
-
         z = ∫( r*∇(v)⋅(heatflux∘(∇(u), tags) ) )*dΩ
-        for (i,hs) in enumerate(hsurf)
-            h = th.h[hs]
-            z += ∫(r*v*u*h)*dΓh[i]
+        for i in 1:nh
+            z = z + ∫(r*v*u*hh[i])*dΓh[i]
         end
         return z
     end
